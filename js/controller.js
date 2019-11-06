@@ -1,21 +1,29 @@
 let tasks = [];
 let greaterTasksKey = -1;
 
-let newTodoInput = document.getElementById('new-todo');
-let todoList = document.getElementsByClassName('todo-list')[0];
+let newTodoInput = document.querySelector('#new-todo');
+let todoList = document.querySelector('.todo-list');
 let destroyButtons = document.getElementsByClassName('destroy');
 let taskRows = document.getElementsByClassName('task-row');
 let checkBoxes = document.getElementsByClassName('toggle');
-let remainingTasksView = document.getElementById('remainingTasks');
+let remainingTasksView = document.querySelector('#remainingTasks');
 
-let allFilterBtn = document.getElementById('all');
-let activeFilterBtn = document.getElementById('active');
-let completedFilterBtn = document.getElementById('completed');
+let allFilterBtn = document.querySelector('#all');
+let activeFilterBtn = document.querySelector('#active');
+let completedFilterBtn = document.querySelector('#completed');
+
+let clearCompletedButton = document.querySelector('.clear-completed');
 
 function createTask(taskName) {
     greaterTasksKey += 1;
 
-    let newTask = new Task(greaterTasksKey, taskName);
+	//let newTask = new Task(greaterTasksKey, taskName);
+	let newTask = {
+		taskId: greaterTasksKey,
+		taskName: taskName,
+		taskCompleted: false
+	};
+	
     tasks.push(newTask);
 
     return newTask;
@@ -55,8 +63,8 @@ defineDestroyOnClickFunc();
 function removeLastEditFocusing() {
 	if (document.getElementsByClassName('edit')[0] != undefined) {
 		let lastEditRow = document.getElementsByClassName('edit')[0].parentElement;
-		console.log(lastEditRow);
-		if (lastEditRow != undefined) {
+		
+		if (lastEditRow) {
 			lastEditRow.classList.remove('editing');
 			lastEditRow.removeChild(lastEditRow.lastElementChild);
 		}
@@ -77,13 +85,13 @@ function defineTaskRowOnDblClickFuntion() {
 				
 				ev.currentTarget.appendChild(inputEdit);
 
-				inputEdit.onkeypress = (ev) => {
+				inputEdit.addEventListener('keypress', (ev) => {
 					if (ev.code === "Enter" && ev.currentTarget.value.trim() != "") {
 						tasks[searchObjectInArray(tasks, ev.currentTarget.parentElement.getAttribute('id'))].taskName = ev.currentTarget.value.trim();
 						ev.currentTarget.previousElementSibling.firstElementChild.nextElementSibling.innerText = ev.currentTarget.value.trim();
 						removeLastEditFocusing();
 					}
-				};
+				});
 			}
 		};
 	}
@@ -92,7 +100,7 @@ defineTaskRowOnDblClickFuntion();
 
 function defineOnCheckedFunction() {
 	for (let i = 0; i < checkBoxes.length; i++) {
-		checkBoxes[i].onchange = (ev) => {
+		checkBoxes[i].addEventListener('change', (ev) => {
 			let parentRow = ev.currentTarget.parentElement.parentElement;
 			let indexInTasksArray = searchObjectInArray(tasks, parentRow.getAttribute('id'));
 			
@@ -108,26 +116,12 @@ function defineOnCheckedFunction() {
 
 			remainingTasks = document.getElementsByClassName('task-row').length - document.getElementsByClassName('completed').length;
 			remainingTasksView.innerText = remainingTasks;
-		}
+		});
 	}
 }
 defineOnCheckedFunction();
 
-function clearCompleted() {
-	for (let i = 0; i < tasks.length; i++) {
-		if(tasks[i].taskCompleted) {
-			tasks.pop(tasks[i]);
-		}
-	}
-	
-	let completedTasks = document.getElementsByClassName('completed');
-
-	while (completedTasks[0]) {
-		todoList.removeChild(completedTasks[0]);
-	}
-}
-
-newTodoInput.onkeypress = (ev) => {
+newTodoInput.addEventListener("keypress" ,(ev) => {
 	if (ev.code === "Enter" && newTodoInput.value.trim() != "") {
 		let task = createTask(newTodoInput.value.trim());
 
@@ -146,9 +140,9 @@ newTodoInput.onkeypress = (ev) => {
 		defineTaskRowOnDblClickFuntion();
 		defineOnCheckedFunction();
 	}
-};
+});
 
-function onAllCliqued() {
+allFilterBtn.addEventListener('click', () => {
 	for (let i = 0; i < taskRows.length; i++) {
 		if (taskRows[i].classList.value.search('hidden') != -1) {
 			taskRows[i].classList.remove('hidden');
@@ -159,9 +153,9 @@ function onAllCliqued() {
 	allFilterBtn.classList.add('selected');
 	activeFilterBtn.classList.remove('selected');
 	completedFilterBtn.classList.remove('selected');
-}
+});
 
-function onActiveCliqued() {
+activeFilterBtn.addEventListener('click', () => {
 	for (let i = 0; i < taskRows.length; i++) {
 		taskRows[i].classList.remove('hidden');
 
@@ -174,9 +168,9 @@ function onActiveCliqued() {
 	activeFilterBtn.classList.remove('selected');
 	activeFilterBtn.classList.add('selected');
 	completedFilterBtn.classList.remove('selected');
-}
+});
 
-function onCompletedCliqued() {
+completedFilterBtn.addEventListener('click', () => {
 	for (let i = 0; i < taskRows.length; i++) {
 		taskRows[i].classList.remove('hidden');
 
@@ -189,4 +183,18 @@ function onCompletedCliqued() {
 	completedFilterBtn.classList.remove('selected');
 	completedFilterBtn.classList.add('selected');
 	activeFilterBtn.classList.remove('selected');
-}
+});
+
+clearCompletedButton.addEventListener('click', () => {
+	for (let i = 0; i < tasks.length; i++) {
+		if(tasks[i].taskCompleted) {
+			tasks.pop(tasks[i]);
+		}
+	}
+	
+	let completedTasks = document.getElementsByClassName('completed');
+
+	while (completedTasks[0]) {
+		todoList.removeChild(completedTasks[0]);
+	}
+});
