@@ -4,7 +4,8 @@ var app = new Vue({
 		appTitle: 'todos',
 		todoId: -1,
 		newTodoText: '',
-		tasks: []
+		tasks: [],
+		tasksToShow: []
 	},
 	methods: {
 		addTodo: function(ev) {
@@ -40,46 +41,11 @@ var app = new Vue({
 
 		clearCompleted: function() {
 			this.tasks = this.tasks.filter(task => !task.taskCompleted);
+			this.tasksToShow = this.tasks;
 		},
 
 		removeTask: function(task) {
 			this.tasks.splice(this.tasks.findIndex(taskItem => task.taskId == taskItem.taskId), 1);
-		},
-
-		filter: function(ev) {
-			switch (ev.currentTarget.getAttribute('id')) {
-				case 'all':
-					document.querySelector('#active').setAttribute('class', '');
-					document.querySelector('#completed').setAttribute('class', '');
-					ev.currentTarget.setAttribute('class', 'selected');
-
-					break;
-				
-				case 'active':
-					document.querySelector('#all').setAttribute('class', '');
-					document.querySelector('#completed').setAttribute('class', '');
-					ev.currentTarget.setAttribute('class', 'selected');
-
-					break;
-				
-				case 'completed':
-					document.querySelector('#all').setAttribute('class', '');
-					document.querySelector('#active').setAttribute('class', '');
-					ev.currentTarget.setAttribute('class', 'selected');
-
-					break;
-			
-				default:
-					break;
-			}
-		},
-
-		amIVisible: function(taskCompleted) {
-			if (window.location.hash == '#/active')
-				return taskCompleted ? false : true;
-			else if (window.location.hash == '#/completed')
-				return taskCompleted ? true : false;
-			else return true
 		}
 	},
 	computed: {
@@ -89,5 +55,26 @@ var app = new Vue({
 	},
 	created() {
 		document.querySelector('#all').setAttribute('class', 'selected');
+
+		this.tasksToShow = this.tasks;
+		
+		window.addEventListener('hashchange', function() {
+			if (window.location.hash == '#/active') {
+				app.tasksToShow = app.tasks.filter(task => !task.taskCompleted);
+				document.querySelector('#all').setAttribute('class', '');
+				document.querySelector('#completed').setAttribute('class', '');
+				document.querySelector('#active').setAttribute('class', 'selected');
+			} else if (window.location.hash == '#/completed') {
+				app.tasksToShow = app.tasks.filter(task => task.taskCompleted);
+				document.querySelector('#all').setAttribute('class', '');
+				document.querySelector('#active').setAttribute('class', '');
+				document.querySelector('#completed').setAttribute('class', 'selected');
+			} else {
+				app.tasksToShow = app.tasks;
+				document.querySelector('#active').setAttribute('class', '');
+				document.querySelector('#completed').setAttribute('class', '');
+				document.querySelector('#all').setAttribute('class', 'selected');
+			}
+		});
 	},
 })

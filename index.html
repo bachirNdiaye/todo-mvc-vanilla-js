@@ -17,7 +17,7 @@
 				<input id="toggle-all" class="toggle-all" type="checkbox">
 				<label for="toggle-all">Mark all as complete</label>
 				<ul class="todo-list">
-					<li v-for="task in tasks" v-if="amIVisible(task.taskCompleted)" @dblclick="onTaskDblCliqued(task)" :class="task.taskCompleted ? task.taskEditState + ' completed' : task.taskEditState">
+					<li v-for="task in tasksToShow" @dblclick="onTaskDblCliqued(task)" :class="task.taskCompleted ? task.taskEditState + ' completed' : task.taskEditState">
 						<div class="view">
 							<input class="toggle" type="checkbox" v-model:checked="task.taskCompleted">
 							<label>{{ task.taskName }}</label>
@@ -31,13 +31,13 @@
 				<span class="todo-count"><strong id="remainingTasks">{{ remainingTasks }}</strong> items left</span>
 				<ul class="filters">
 					<li>
-						<a href="#/" id="all" @click="filter" >All</a>
+						<a href="#/" id="all" >All</a>
 					</li>
 					<li>
-						<a href="#/active" id="active" @click="filter" >Active</a>
+						<a href="#/active" id="active" >Active</a>
 					</li>
 					<li>
-						<a href="#/completed" id="completed" @click="filter" >Completed</a>
+						<a href="#/completed" id="completed" >Completed</a>
 					</li>
 				</ul>
 				<button class="clear-completed" @click="clearCompleted" style="display: block;">Clear completed</button>
