@@ -118,8 +118,10 @@ function createTaskInDOM(task) {
 document.querySelector('#new-todo').addEventListener('keypress', (ev) => {
 	let newTodoInput = document.querySelector('#new-todo');
 
-	if (ev.code === "Enter" && newTodoInput.value.trim() != "")
+	if (ev.code === "Enter" && newTodoInput.value.trim() != "") {
 		createTaskInDOM(addTaskInArray(newTodoInput.value.trim()));
+		newTodoInput.value = '';
+	}
 });
 
 document.querySelector('.clear-completed').addEventListener('click', () => {
