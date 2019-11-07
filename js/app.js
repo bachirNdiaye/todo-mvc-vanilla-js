@@ -24,9 +24,7 @@ var app = new Vue({
 		},
 
 		onTaskDblCliqued: function(task) {
-			console.log(task);
 			let lastEditTask = this.tasks.filter(task => task.taskEditState == 'editing')[0];
-			console.log(lastEditTask);
 			if (lastEditTask) lastEditTask.taskEditState = 'notEditing';
 			task.taskEditState = 'editing';
 		},
