@@ -5,7 +5,7 @@ var app = new Vue({
 		todoId: -1,
 		newTodoText: '',
 		tasks: [],
-		tasksToShow: []
+		filter: ''
 	},
 	methods: {
 		addTodo: function(ev) {
@@ -44,35 +44,21 @@ var app = new Vue({
 
 		removeTask: function(task) {
 			this.tasks.splice(this.tasks.findIndex(taskItem => task.taskId == taskItem.taskId), 1);
+		},
+
+		updateFilter(filter) {
+			this.filter = filter;
 		}
 	},
 	computed: {
 		remainingTasks: function() {
 			return this.tasks.filter(task => !task.taskCompleted).length;
-		}
-	},
-	created() {
-		document.querySelector('#all').setAttribute('class', 'selected');
+		},
 
-		this.tasksToShow = this.tasks;
-		
-		window.addEventListener('hashchange', function() {
-			if (window.location.hash == '#/active') {
-				app.tasksToShow = app.tasks.filter(task => !task.taskCompleted);
-				document.querySelector('#all').setAttribute('class', '');
-				document.querySelector('#completed').setAttribute('class', '');
-				document.querySelector('#active').setAttribute('class', 'selected');
-			} else if (window.location.hash == '#/completed') {
-				app.tasksToShow = app.tasks.filter(task => task.taskCompleted);
-				document.querySelector('#all').setAttribute('class', '');
-				document.querySelector('#active').setAttribute('class', '');
-				document.querySelector('#completed').setAttribute('class', 'selected');
-			} else {
-				app.tasksToShow = app.tasks;
-				document.querySelector('#active').setAttribute('class', '');
-				document.querySelector('#completed').setAttribute('class', '');
-				document.querySelector('#all').setAttribute('class', 'selected');
-			}
-		});
-	},
+		tasksToShow: function () {
+			if (this.filter == 'active') return this.tasks.filter(task => !task.taskCompleted);
+			else if (this.filter == 'completed') return this.tasks.filter(task => task.taskCompleted);
+			else return this.tasks;
+		}
+	}
 })

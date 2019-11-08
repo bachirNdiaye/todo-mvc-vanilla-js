@@ -31,13 +31,13 @@
 				<span class="todo-count"><strong id="remainingTasks">{{ remainingTasks }}</strong> items left</span>
 				<ul class="filters">
 					<li>
-						<a href="#/" id="all" >All</a>
+						<a href="#/" :class="{ selected: filter == 'all' || filter == '' }" @click="updateFilter('all')" >All</a>
 					</li>
 					<li>
-						<a href="#/active" id="active" >Active</a>
+						<a href="#/active" :class="{ selected: filter == 'active' }" @click="updateFilter('active')" >Active</a>
 					</li>
 					<li>
-						<a href="#/completed" id="completed" >Completed</a>
+						<a href="#/completed" :class="{ selected: filter == 'completed' }" @click="updateFilter('completed')" >Completed</a>
 					</li>
 				</ul>
 				<button class="clear-completed" @click="clearCompleted" style="display: block;">Clear completed</button>
